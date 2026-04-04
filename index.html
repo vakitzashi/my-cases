@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <title>Кейсы | AI и автоматизация</title>
+    <meta name="description" content="Сайт-визитка с кейсами по AI, Telegram-ботам, автоматизации, аналитике и контентным продуктам.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #06111b;
+            --bg-soft: #0c1a27;
+            --panel: rgba(10, 20, 31, 0.58);
+            --panel-strong: rgba(9, 18, 30, 0.68);
+            --border: rgba(184, 224, 255, 0.24);
+            --text: #eef6ff;
+            --muted: #a8bbce;
+            --accent: #79f6e3;
+            --accent-2: #6faeff;
+            --accent-3: #ffd28a;
+            --shadow: 0 24px 80px rgba(2, 9, 18, 0.32);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Open Sans", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.08), transparent 18%),
+                radial-gradient(circle at top left, rgba(111, 174, 255, 0.22), transparent 32%),
+                radial-gradient(circle at 85% 15%, rgba(121, 246, 227, 0.18), transparent 26%),
+                radial-gradient(circle at 50% 100%, rgba(255, 210, 138, 0.14), transparent 28%),
+                linear-gradient(180deg, #04101a 0%, #07131e 35%, #091724 100%);
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: auto;
+            width: 34rem;
+            height: 34rem;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            top: -8rem;
+            left: -10rem;
+            background: rgba(99, 151, 255, 0.12);
+        }
+
+        body::after {
+            right: -12rem;
+            bottom: -10rem;
+            background: rgba(121, 246, 227, 0.1);
+        }
+
+        body > .grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.085;
+            mix-blend-mode: soft-light;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.7) 0.7px, transparent 1px),
+                radial-gradient(circle at 80% 35%, rgba(255, 255, 255, 0.45) 0.7px, transparent 1px),
+                radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.45) 0.8px, transparent 1.2px),
+                radial-gradient(circle at 65% 85%, rgba(255, 255, 255, 0.35) 0.7px, transparent 1px);
+            background-size: 18px 18px, 23px 23px, 27px 27px, 31px 31px;
+            background-position: 0 0, 7px 11px, 13px 5px, 3px 17px;
+        }
+
+        .shell {
+            position: relative;
+            z-index: 2;
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 28px 0 56px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 34px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: "Jura", sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .brand-mark {
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            box-shadow: 0 0 18px rgba(121, 246, 227, 0.65);
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.05));
+            color: var(--muted);
+            font-size: 0.83rem;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.24),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px) saturate(145%);
+            text-decoration: none;
+            transition: border-color 220ms ease, color 220ms ease, transform 220ms ease;
+        }
+
+        .status:hover,
+        .status:focus-visible {
+            color: var(--text);
+            border-color: rgba(121, 246, 227, 0.42);
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(240px, 0.7fr);
+            gap: 22px;
+            margin-bottom: 28px;
+        }
+
+        .hero-panel,
+        .hero-note {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
+                linear-gradient(180deg, rgba(15, 31, 47, 0.48), rgba(9, 19, 30, 0.28));
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.28),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+                var(--shadow);
+            backdrop-filter: blur(26px) saturate(155%);
+        }
+
+        .hero-panel {
+            padding: 34px 34px 30px;
+        }
+
+        .hero-panel::before,
+        .hero-note::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(120deg, rgba(121, 246, 227, 0.12), transparent 34%, rgba(111, 174, 255, 0.12)),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 28%);
+            pointer-events: none;
+        }
+
+        .hero-panel::after,
+        .hero-note::after {
+            content: "";
+            position: absolute;
+            inset: 1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 18%, transparent 72%, rgba(255, 255, 255, 0.08));
+            opacity: 0.55;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(121, 246, 227, 0.09);
+            color: var(--accent);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        h1 {
+            margin: 18px 0 16px;
+            font-family: "Jura", sans-serif;
+            font-size: clamp(2.35rem, 5vw, 4.4rem);
+            line-height: 0.96;
+            letter-spacing: -0.04em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #eff8ff 0%, #9ad0ff 45%, #79f6e3 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-copy {
+            max-width: 62ch;
+            margin: 0;
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .hero-note {
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 22px;
+        }
+
+        .hero-note h2 {
+            margin: 0;
+            font-family: "Jura", sans-serif;
+            font-size: 1.2rem;
+            line-height: 1.2;
+        }
+
+        .hero-note p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .stat {
+            padding: 14px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(18px) saturate(150%);
+        }
+
+        .stat strong {
+            display: block;
+            margin-bottom: 6px;
+            font-family: "Jura", sans-serif;
+            font-size: 1.35rem;
+            color: var(--text);
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .case-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 290px;
+            padding: 24px;
+            border-radius: 26px;
+            border: 1px solid var(--border);
+            --mx: 82%;
+            --my: 18%;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.025)),
+                linear-gradient(180deg, rgba(10, 22, 35, 0.76), rgba(5, 12, 20, 0.7)),
+                var(--panel);
+            color: inherit;
+            text-decoration: none;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.18),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.025),
+                0 24px 80px rgba(1, 8, 16, 0.42);
+            overflow: hidden;
+            isolation: isolate;
+            transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+            backdrop-filter: blur(28px) saturate(160%);
+            grid-column: span 4;
+        }
+
+        .case-card:hover,
+        .case-card:focus-visible {
+            transform: translateY(-6px);
+            border-color: rgba(121, 246, 227, 0.42);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.22),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.03),
+                0 28px 90px rgba(1, 9, 18, 0.56);
+            outline: none;
+        }
+
+        .case-card::before {
+            content: "";
+            position: absolute;
+            inset: auto -14% 58% auto;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(121, 246, 227, 0.18), transparent 68%);
+            opacity: 0.78;
+            pointer-events: none;
+            transition: opacity 220ms ease, transform 220ms ease;
+            z-index: 0;
+        }
+
+        .case-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background:
+                radial-gradient(180px circle at var(--mx) var(--my), rgba(121, 246, 227, 0.16), transparent 52%),
+                radial-gradient(140px circle at calc(var(--mx) + 2%) calc(var(--my) + 2%), rgba(255, 255, 255, 0.1), transparent 45%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 18%, transparent 72%, rgba(255, 255, 255, 0.04));
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 220ms ease;
+            z-index: 0;
+            mix-blend-mode: screen;
+        }
+
+        .case-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .case-card.featured {
+            grid-column: span 8;
+            min-height: 360px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)),
+                linear-gradient(140deg, rgba(9, 21, 34, 0.82), rgba(5, 13, 22, 0.74)),
+                var(--panel-strong);
+        }
+
+        .case-card.featured .badge {
+            box-shadow: 0 8px 28px rgba(121, 246, 227, 0.24);
+        }
+
+        .case-card.featured .icon-wrap {
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.28),
+                0 12px 32px rgba(111, 174, 255, 0.26);
+        }
+
+        .case-card.featured::before {
+            position: absolute;
+            right: -40px;
+            bottom: -46px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(111, 174, 255, 0.26), transparent 66%);
+            pointer-events: none;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--muted);
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            backdrop-filter: blur(16px) saturate(150%);
+        }
+
+        .featured .badge {
+            color: #09131d;
+            background: linear-gradient(90deg, var(--accent), #a8f3ff);
+            font-weight: 700;
+        }
+
+        .icon-wrap {
+            width: 58px;
+            height: 58px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+            flex-shrink: 0;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px) saturate(150%);
+        }
+
+        .featured .icon-wrap {
+            width: 68px;
+            height: 68px;
+            border-radius: 20px;
+            color: #0e1a27;
+            background: linear-gradient(135deg, rgba(121, 246, 227, 0.96), rgba(111, 174, 255, 0.95));
+            border-color: transparent;
+        }
+
+        .icon-wrap svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .featured .icon-wrap svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .case-card h3 {
+            margin: 0 0 12px;
+            font-family: "Jura", sans-serif;
+            font-size: 1.46rem;
+            line-height: 1.08;
+        }
+
+        .featured h3 {
+            font-size: clamp(1.9rem, 2vw, 2.6rem);
+            max-width: 13ch;
+        }
+
+        .case-card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 0.96rem;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: auto;
+            padding-top: 24px;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.92rem;
+            color: var(--text);
+            text-shadow: 0 0 22px rgba(255, 255, 255, 0.06);
+        }
+
+        .card-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .card-index {
+            font-family: "Jura", sans-serif;
+            color: rgba(255, 255, 255, 0.28);
+            font-size: 1.2rem;
+        }
+
+        .featured .card-index {
+            color: rgba(121, 246, 227, 0.55);
+            font-size: 1.55rem;
+        }
+
+        @media (max-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .case-card,
+            .case-card.featured {
+                grid-column: span 6;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .shell {
+                width: min(100% - 20px, 1180px);
+                padding-top: 18px;
+                padding-bottom: 30px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 22px;
+            }
+
+            .hero-panel,
+            .hero-note,
+            .case-card,
+            .case-card.featured {
+                border-radius: 22px;
+            }
+
+            .hero-panel {
+                padding: 24px 20px 22px;
+            }
+
+            .hero-note {
+                padding: 22px 20px;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .cases-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .case-card,
+            .case-card.featured {
+                grid-column: auto;
+                min-height: auto;
+                padding: 20px;
+            }
+
+            .case-card h3,
+            .featured h3 {
+                max-width: none;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="shell">
+        <header class="topbar">
+            <div class="brand">
+                <span class="brand-mark" aria-hidden="true"></span>
+                selected cases
+            </div>
+            <a class="status" href="https://t.me/vakitzashi" target="_blank" rel="noopener noreferrer">Связаться со мной</a>
+        </header>
+
+        <section class="hero" aria-label="Приветствие">
+            <div class="hero-panel">
+                <div class="eyebrow">Портфолио проектов</div>
+                <h1><span class="gradient-text">Привет,</span> здесь собраны мои кейсы.</h1>
+                <p class="hero-copy">
+                    Это компактная витрина моих проектов: от AI-продуктов и Telegram-ботов до аналитики,
+                    автоматизации и контентных систем. Ниже можно открыть каждый кейс и перейти к полному описанию.
+                </p>
+            </div>
+
+            <aside class="hero-note" aria-label="Краткое описание">
+                <div>
+                    <h2>Фокус на прикладные решения</h2>
+                    <p>
+                        В кейсах собраны проекты, где важны не только технологии, но и реальный рабочий результат:
+                        ускорение процессов, рост качества контента, удобные интерфейсы и продуманная AI-логика.
+                    </p>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat">
+                        <strong>10</strong>
+                        <span>отобранных кейсов</span>
+                    </div>
+                    <div class="stat">
+                        <strong>1</strong>
+                        <span>главный флагманский проект</span>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <main class="cases-grid" aria-label="Список кейсов">
+            <a class="case-card featured" href="https://different-taxicab-a5e.notion.site/CORE-by-root-ai-338d889a8fd380bcb22ac0ce7b152982?source=copy_link" target="_blank" rel="noopener noreferrer">
+                <div class="card-top">
+                    <div class="badge">Флагманский проект</div>
+                    <div class="icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20V11"></path>
+                            <path d="M8.5 21h7"></path>
+                            <path d="M12 4.5 6.5 11h11L12 4.5Z"></path>
+                            <path d="M12 8 4.5 15h15L12 8Z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3>CORE by /root.ai</h3>
+                <p>
+                    Production-grade AI-система с многоуровневым RAG-контуром, маршрутизацией запросов,
+                    контролем качества ответа, безопасностью, логированием и отдельными режимами интерфейса.
+                </p>
+                <div class="card-footer">
+                    <span class="card-link">Открыть кейс
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3.5 12.5 12.5 3.5"></path>
+                            <path d="M5 3.5h7.5V11"></path>
+                        </svg>
+                    </span>
+                    <span class="card-index">01</span>
+                </div>
+            </a>
+
+            <a class="case-card" href="https://different-taxicab-a5e.notion.site/338d889a8fd380bd9931d8a6b07f917b?source=copy_link" target="_blank" rel="noopener noreferrer">
+                <div class="card-top">
+                    <div class="badge">Job Tech</div>
+                    <div class="icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 8.5h16v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5v-9Z"></path>
+                            <path d="M9 8.5V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"></path>
+                            <path d="M4 12h16"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3>Work-Hunter</h3>
+                <p>
+                    Инструмент для умного подбора вакансий и полуавтоматического отклика: отсекает шум,
+                    ранжирует предложения и превращает хаотичный поиск работы в управляемую воронку.
+                </p>
+                <div class="card-footer">
+                    <span class="card-link">Открыть кейс
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3.5 12.5 12.5 3.5"></path>
+                            <path d="M5 3.5h7.5V11"></path>
+                        </svg>
+                    </span>
+                    <span class="card-index">02</span>
+                </div>
+            </a>
+
+            <a class="case-card" href="https://different-taxicab-a5e.notion.site/Tik-Tok-trend-316d889a8fd380bb9e2dc0e944c15004?source=copy_link" target="_blank" rel="noopener noreferrer">
+                <div class="card-top">
+                    <div class="badge">Data Parsing</div>
+                    <div class="icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M7 5.5h10A2.5 2.5 0 0 1 19.5 8v8A2.5 2.5 0 0 1 17 18.5H7A2.5 2.5 0 0 1 4.5 16V8A2.5 2.5 0 0 1 7 5.5Z"></path>
+                            <path d="m10 9 5 3-5 3V9Z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3>Универсальный TikTok trend parser</h3>
+                <p>
+                    Парсер трендов на Python и Playwright с выгрузкой в Google Sheets, аномалийным скорингом,
+                    кэшированием и быстрым поиском сигналов в динамичном контент-потоке.
+                </p>
+                <div class="card-footer">
+                    <span class="card-link">Открыть кейс
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3.5 12.5 12.5 3.5"></path>
+                            <path d="M5 3.5h7.5V11"></path>
+                        </svg>
+                    </span>
+                    <span class="card-index">03</span>
+                </div>
+            </a>
+
+            <a class="case-card" href="https://different-taxicab-a5e.notion.site/Telegram-259d889a8fd3801b9724d5afe2b0a61e?source=copy_link" target="_blank" rel="noopener noreferrer">
+                <div class="card-top">
+                    <div class="badge">Telegram</div>
+                    <div class="icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m20 4-2.7 14.2c-.2.9-.7 1.1-1.5.7l-4.1-3-2 2a1.1 1.1 0 0 1-.9.5l.3-4.4L17.2 7c.4-.4-.1-.7-.6-.4l-10 6.3-4.3-1.4c-.9-.3-.9-.9.2-1.3L18.4 4c.8-.3 1.8.2 1.6 1Z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3>Контент-бот для Telegram</h3>
+                <p>
+                    Система планирования и публикации для агентства с 55 каналами: единый центр контента,
+                    автоматизация дедлайнов, меньше ручной рутины и меньше ошибок в публикациях.
+                </p>
+                <div class="card-footer">
+                    <span class="card-link">Открыть кейс
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3.5 12.5 12.5 3.5"></path>
+                            <path d="M5 3.5h7.5V11"></path>
+                        </svg>
+                    </span>
+                    <span class="card-index">04</span>
+                </div>
+            </a>
+
+            <a class="case-card" href="https://different-taxicab-a5e.notion.site/AI-25ad889a8fd380d9929df94fc278871d?source=copy_link" target="_blank" rel="noopener noreferrer">
+                <div class="card-top">
+                    <div class="badge">AI Coach</div>
+                    <div class="icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21a7 7 0 1 0-7-7"></path>
+                            <path d="M12 7v5l3 2"></path>
+                            <path d="M5 5l2.2 2.2"></path>
+                            <path d="M19 5 16.8 7.2"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3>AI-коуч нового поколения</h3>
+                <p>
+                    Telegram-бот на Gemini для долгосрочной поддержки пользователей: стратегический коуч,
+                    “аватар будущего”, ежедневные рефлексии и персонализированное сопровождение.
+                </p>
+                <div class="card-footer">
+                    <span class="card-link">Открыть кейс
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3.5 12.5 12.5 3.5"></path>
+                            <path d="M5 3.5h7.5V11"></path>
+                        </svg>
+                    </span>
+                    <span class="card-index">05</span>
+                </div>
+            </a>
+
+            <a class="case-card" href="https://different-taxicab-a5e.notion.site/2c7d889a8fd3809e9183e553ecd21164?source=copy_link" target="_blank" rel="noopener noreferrer">
+                <div class="card-top">
+                    <div class="badge">Health Tech</div>
+                    <div class="icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20s-6.5-3.9-6.5-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19.5 11c0 5.1-7.5 9-7.5 9Z"></path>
+                            <path d="M9 12h6"></path>
+                            <path d="M12 9v6"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3>Ассистент-нутрициолог</h3>
+                <p>
+                    Telegram-бот “Едометр” для анализа фото еды, подсчёта КБЖУ, составления меню,
+                    рекомендаций по питанию и монетизации через подписку.
+                </p>
+                <div class="card-footer">
+                    <span class="card-link">Открыть кейс
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3.5 12.5 12.5 3.5"></path>
+                            <path d="M5 3.5h7.5V11"></path>
+                        </svg>
+                    </span>
+                    <span class="card-index">06</span>
+                </div>
+            </a>
+
+            <a class="case-card" href="https://different-taxicab-a5e.notion.site/2c7d889a8fd380eca83ad1ab4e269aae?source=copy_link" target="_blank" rel="noopener noreferrer">
+                <div class="card-top">
+                    <div class="badge">Vision AI</div>
+                    <div class="icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </div>
+                </div>
+                <h3>Бот-аналитик лицевых метрик</h3>
+                <p>
+                    ИИ-бот для многофакторного анализа внешности: распознаёт лицевые метрики, сравнивает с типажами
+                    и формирует персональный план эстетического развития.
+                </p>
+                <div class="card-footer">
+                    <span class="card-link">Открыть кейс
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3.5 12.5 12.5 3.5"></path>
+                            <path d="M5 3.5h7.5V11"></path>
+                        </svg>
+                    </span>
+                    <span class="card-index">07</span>
+                </div>
+            </a>
+
+            <a class="case-card" href="https://different-taxicab-a5e.notion.site/Twink-1f7d889a8fd38076b2c3cbfb5f0a0ff0?source=copy_link" target="_blank" rel="noopener noreferrer">
+                <div class="card-top">
+                    <div class="badge">AI Team</div>
+                    <div class="icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
+                            <path d="M17 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path>
+                            <path d="M3.5 19a4.5 4.5 0 0 1 9 0"></path>
+                            <path d="M14.5 19a3.5 3.5 0 0 1 7 0"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3>Twink</h3>
+                <p>
+                    Виртуальный отдел из ИИ-сотрудников для онлайн-школы: узкоспециализированные модели,
+                    обученные под копирайтинг, стратегию, сценарии и контентные задачи бизнеса.
+                </p>
+                <div class="card-footer">
+                    <span class="card-link">Открыть кейс
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3.5 12.5 12.5 3.5"></path>
+                            <path d="M5 3.5h7.5V11"></path>
+                        </svg>
+                    </span>
+                    <span class="card-index">08</span>
+                </div>
+            </a>
+
+            <a class="case-card" href="https://different-taxicab-a5e.notion.site/1f7d889a8fd3806abf84fae1d661278a?source=copy_link" target="_blank" rel="noopener noreferrer">
+                <div class="card-top">
+                    <div class="badge">Automation</div>
+                    <div class="icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M7 4.5h7l3 3v12H7z"></path>
+                            <path d="M14 4.5v3h3"></path>
+                            <path d="M9 11h6"></path>
+                            <path d="M9 14h6"></path>
+                            <path d="M9 17h4"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3>Нейросеть против рутины</h3>
+                <p>
+                    Пакет AI-скриптов для маркетолога: автоматизирует аналитику, мониторинг аккаунтов,
+                    отчёты, таргетинг и экономит значительную часть рабочего дня.
+                </p>
+                <div class="card-footer">
+                    <span class="card-link">Открыть кейс
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3.5 12.5 12.5 3.5"></path>
+                            <path d="M5 3.5h7.5V11"></path>
+                        </svg>
+                    </span>
+                    <span class="card-index">09</span>
+                </div>
+            </a>
+
+            <a class="case-card" href="https://different-taxicab-a5e.notion.site/FORGE-1f7d889a8fd380bb9372ee655f379f20?source=copy_link" target="_blank" rel="noopener noreferrer">
+                <div class="card-top">
+                    <div class="badge">Content System</div>
+                    <div class="icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m12 4.5 7 3.5-7 3.5-7-3.5 7-3.5Z"></path>
+                            <path d="m5 12 7 3.5 7-3.5"></path>
+                            <path d="m5 16 7 3.5 7-3.5"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3>FORGE</h3>
+                <p>
+                    Контентная AI-студия с многоступенчатым пайплайном: анализ ЦА, карта смыслов,
+                    стратегия продвижения и генерация живого контента вместо шаблонного “AI-мусора”.
+                </p>
+                <div class="card-footer">
+                    <span class="card-link">Открыть кейс
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3.5 12.5 12.5 3.5"></path>
+                            <path d="M5 3.5h7.5V11"></path>
+                        </svg>
+                    </span>
+                    <span class="card-index">10</span>
+                </div>
+            </a>
+        </main>
+    </div>
+    <script>
+        const cards = document.querySelectorAll('.case-card');
+
+        cards.forEach((card) => {
+            card.addEventListener('pointermove', (event) => {
+                const rect = card.getBoundingClientRect();
+                const x = ((event.clientX - rect.left) / rect.width) * 100;
+                const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+                card.style.setProperty('--mx', `${x}%`);
+                card.style.setProperty('--my', `${y}%`);
+            });
+
+            card.addEventListener('pointerenter', () => {
+                card.style.setProperty('--mx', '82%');
+                card.style.setProperty('--my', '18%');
+            });
+
+            card.addEventListener('pointerleave', () => {
+                card.style.setProperty('--mx', '82%');
+                card.style.setProperty('--my', '18%');
+            });
+        });
+    </script>
+</body>
+</html>
